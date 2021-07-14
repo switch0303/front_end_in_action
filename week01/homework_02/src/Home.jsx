@@ -15,6 +15,9 @@ function Home() {
             <div>
                 <Link to="/editordemo">EditorDemo</Link>
             </div>
+            <div>
+                <Link to="/grayscale">GrayScale</Link>
+            </div>
         </div>
     );
 }
