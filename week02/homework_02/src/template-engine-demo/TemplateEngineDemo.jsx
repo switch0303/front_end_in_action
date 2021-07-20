@@ -108,7 +108,7 @@ function TemplateEngineDemo() {
                                 image:
                             </label>
                             <input
-                                name="image"
+                                id="image"
                                 type="text"
                                 value={data.image}
                                 disabled
@@ -130,7 +130,7 @@ function TemplateEngineDemo() {
                             </label>
                             <input
                                 type="checkbox"
-                                name="showImage"
+                                id="showImage"
                                 checked={data.info.showImage}
                                 onChange={(e) => {
                                     setData({
@@ -158,7 +158,7 @@ function TemplateEngineDemo() {
                             </label>
                             <input
                                 type="checkbox"
-                                name="showDate"
+                                id="showDate"
                                 checked={data.info.showDate}
                                 onChange={(e) => {
                                     setData({
@@ -183,7 +183,7 @@ function TemplateEngineDemo() {
                             </label>
                             <input
                                 type="text"
-                                name="name"
+                                id="name"
                                 value={data.info.name}
                                 style={{ width: 220 }}
                                 onChange={(e) => {
@@ -209,7 +209,7 @@ function TemplateEngineDemo() {
                             </label>
                             <input
                                 type="date"
-                                name="date"
+                                id="date"
                                 value={data.info.date}
                                 style={{ width: 220 }}
                                 onChange={(e) => {
