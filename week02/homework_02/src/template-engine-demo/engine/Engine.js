@@ -7,18 +7,18 @@ export default class Engine {
 
     render(template, data) {
         const transformedTpl = this.transformTemplate(template);
-        console.log(
-            "第一阶段|解析创建node>>>",
-            this.nodes,
-            "第一阶段|转换template>>>",
-            transformedTpl
-        );
+        // console.log(
+        //     "第一阶段|解析创建node>>>",
+        //     this.nodes,
+        //     "第一阶段|转换template>>>",
+        //     transformedTpl
+        // );
 
         const rootNode = this.parseToNode(transformedTpl);
-        console.log("第二阶段|构建nodeTree>>>", rootNode);
+        // console.log("第二阶段|构建nodeTree>>>", rootNode);
 
         const dom = this.parseNodeToDOM(rootNode, data);
-        console.log("第三阶段|nodeTree To DOMTree>>>", dom);
+        // console.log("第三阶段|nodeTree To DOMTree>>>", dom);
 
         return dom;
     }
@@ -101,10 +101,8 @@ export default class Engine {
         const queue = [[rootNode, fragment, data]];
         while (queue.length) {
             const [currentNode, parentDOM, scope] = queue.shift();
-            const attrs = currentNode.attrs || new Map();
-            if (attrs.get("v-if")) {
-                console.log("v-if");
-            } else {
+
+            const addDOM = () => {
                 const childrenHtml = this.transformHtmlWithData(
                     currentNode.childrenTemplate,
                     data,
@@ -116,6 +114,17 @@ export default class Engine {
                 currentNode.children.forEach((child) => {
                     queue.push([child, element, scope]);
                 });
+            };
+
+            const attrs = currentNode.attrs || new Map();
+            if (attrs.get("v-if")) {
+                const props = attrs.get("v-if").split(".");
+                const value = this.getPropValue(props, data, scope);
+                if (value) {
+                    addDOM();
+                }
+            } else {
+                addDOM();
             }
         }
 
@@ -125,8 +134,7 @@ export default class Engine {
     transformHtmlWithData(childrenTpl, globalScope, currentScope) {
         return childrenTpl.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, p1) => {
             const props = p1.split(".");
-            let value = currentScope[props[0]] || globalScope[props[0]];
-            props.slice(1).forEach((prop) => (value = value[prop]));
+            let value = this.getPropValue(props, globalScope, currentScope);
             return value;
         });
     }
@@ -147,15 +155,18 @@ export default class Engine {
                 const result = /\{\{(.*?)\}\}/.exec(value);
                 if (result && result.length > 0) {
                     const props = result[1].split(".");
-                    let val = currentScope[props[0]] || globalScope[props[0]];
-                    props.slice(1).forEach((prop) => {
-                        val = val[prop];
-                    });
+                    let val = this.getPropValue(props, globalScope, currentScope);
                     element.setAttribute(key, val);
                 } else {
                     element.setAttribute(key, value);
                 }
             }
         }
+    }
+
+    getPropValue(props, globalScope, currentScope) {
+        let value = currentScope[props[0]] || globalScope[props[0]];
+        props.slice(1).forEach((prop) => (value = value[prop]));
+        return value;
     }
 }

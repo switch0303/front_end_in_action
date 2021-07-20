@@ -6,9 +6,12 @@ export default class EngineDOM {
         this.engine = new Engine();
     }
 
-    render(template, data) {
+    render(template, data, callback) {
         const dom = this.engine.render(template, data);
         this.root.appendChild(dom);
+        if (typeof callback === "function") {
+            callback();
+        }
     }
 
     mounted(dom) {
