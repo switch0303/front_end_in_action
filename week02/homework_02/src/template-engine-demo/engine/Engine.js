@@ -102,13 +102,18 @@ export default class Engine {
         while (queue.length) {
             const [currentNode, parentDOM, scope] = queue.shift();
 
-            const addDOM = () => {
+            const addDOM = (currentNode, scope) => {
                 const childrenHtml = this.transformHtmlWithData(
                     currentNode.childrenTemplate,
                     data,
                     scope
                 );
-                const element = this.createElement(currentNode, childrenHtml, data, scope);
+                const element = this.createElement(
+                    currentNode,
+                    childrenHtml,
+                    data,
+                    scope
+                );
                 parentDOM.appendChild(element);
 
                 currentNode.children.forEach((child) => {
@@ -121,10 +126,27 @@ export default class Engine {
                 const props = attrs.get("v-if").split(".");
                 const value = this.getPropValue(props, data, scope);
                 if (value) {
-                    addDOM();
+                    addDOM(currentNode, scope);
+                }
+            } else if (attrs.get("v-for")) {
+                let [key, prop] = attrs.get("v-for").split("in");
+                key = key.trim();
+                prop = prop.trim();
+                for (let i = 0; i < scope[prop].length; i += 1) {
+                    const copyNode = new Vnode(
+                        currentNode.tag,
+                        currentNode.attrs,
+                        currentNode.children,
+                        currentNode.parent,
+                        currentNode.childrenTemplate
+                    );
+                    const scopeForCopyNode = {
+                        [key]: scope[prop][i],
+                    };
+                    addDOM(copyNode, scopeForCopyNode);
                 }
             } else {
-                addDOM();
+                addDOM(currentNode, scope);
             }
         }
 
@@ -149,13 +171,17 @@ export default class Engine {
     }
 
     transformAttrsWithData(element, node, globalScope, currentScope) {
-        const ignoreAttrs = ["v-if"];
+        const ignoreAttrs = ["v-if", "v-for"];
         for (let [key, value] of node.attrs) {
             if (!ignoreAttrs.includes(key)) {
                 const result = /\{\{(.*?)\}\}/.exec(value);
                 if (result && result.length > 0) {
                     const props = result[1].split(".");
-                    let val = this.getPropValue(props, globalScope, currentScope);
+                    let val = this.getPropValue(
+                        props,
+                        globalScope,
+                        currentScope
+                    );
                     element.setAttribute(key, val);
                 } else {
                     element.setAttribute(key, value);
