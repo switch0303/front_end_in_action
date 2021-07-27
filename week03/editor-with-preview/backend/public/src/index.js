@@ -1,4 +1,4 @@
-import { add, mul } from "./util";
+import { createApp } from 'vue';
+import App from './App.vue';
 
-const sum = add(2, 12);
-document.write(sum);
+createApp(App).mount('#app')

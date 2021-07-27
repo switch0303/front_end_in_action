@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import fileLanguage from "file-language";
 
 import Editor from "@monaco-editor/react";
@@ -8,6 +8,7 @@ function EditorWithPreview() {
     const [currentFileName, setCurrentFileName] = useState(null);
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [iframeLoading, setIframeLoading] = useState(true);
 
     const editorRef = useRef(null);
     const iframeRef = useRef(null);
@@ -51,17 +52,40 @@ function EditorWithPreview() {
                 setLoading(false);
                 if (data && data.success) {
                     iframeRef.current.contentWindow.location.reload();
+                    setIframeLoading(true);
                 }
             });
     }
 
-    function handleFileSave() {
+    const handleFileSave = useCallback(() => {
         if (file) {
             saveFile(`src/${file.name}`, editorRef.current.getValue());
         }
+    }, [file]);
+
+    function onIframeLoad() {
+        setIframeLoading(false);
+    }
+
+    function handleKeyBoardSave(e) {
+        if (
+            e.keyCode === 83 &&
+            (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)
+        ) {
+            e.preventDefault();
+        }
+    }
+
+    function addKeydownEventListener() {
+        document.addEventListener("keydown", handleKeyBoardSave);
+    }
+
+    function removeKeydownEventListener() {
+        document.removeEventListener("keydown", handleKeyBoardSave);
     }
 
     useEffect(() => {
+        addKeydownEventListener();
         fetch("./api/files/src")
             .then(function (response) {
                 return response.json();
@@ -72,6 +96,9 @@ function EditorWithPreview() {
                     setCurrentFileName(files[0]);
                 }
             });
+        return () => {
+            removeKeydownEventListener();
+        };
     }, []);
 
     useEffect(() => {
@@ -156,7 +183,7 @@ function EditorWithPreview() {
                         <span>EDITOR</span>
                         <button
                             type="button"
-                            disabled={loading}
+                            disabled={loading || iframeLoading}
                             style={{
                                 marginLeft: "auto",
                                 marginRight: 20,
@@ -197,16 +224,34 @@ function EditorWithPreview() {
                     >
                         PREVIEW
                     </div>
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: 1, position: "relative" }}>
                         <iframe
                             ref={iframeRef}
                             src="./api/preview"
+                            onLoad={onIframeLoad}
                             frameBorder="0"
                             style={{
                                 width: "100%",
                                 height: "100%",
                             }}
                         ></iframe>
+                        {iframeLoading ? (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0,
+                                    backgroundColor: "rgba(0, 0, 0, .2)",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                loading...
+                            </div>
+                        ) : null}
                     </div>
                 </div>
             </div>
