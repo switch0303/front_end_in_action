@@ -1,0 +1,9 @@
+.App {
+  text-align: center;
+  padding: 20px 80px;
+}
+
+.App p {
+  text-align: left;
+  font-size: 20px;
+}
