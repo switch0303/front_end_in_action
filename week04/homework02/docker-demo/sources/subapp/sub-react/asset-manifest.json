@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/subapp/sub-react/static/css/main.826fdc04.chunk.css",
+    "main.js": "/subapp/sub-react/static/js/main.b4df2967.chunk.js",
+    "main.js.map": "/subapp/sub-react/static/js/main.b4df2967.chunk.js.map",
+    "runtime-main.js": "/subapp/sub-react/static/js/runtime-main.09e55165.js",
+    "runtime-main.js.map": "/subapp/sub-react/static/js/runtime-main.09e55165.js.map",
+    "static/js/2.552a0d8b.chunk.js": "/subapp/sub-react/static/js/2.552a0d8b.chunk.js",
+    "static/js/2.552a0d8b.chunk.js.map": "/subapp/sub-react/static/js/2.552a0d8b.chunk.js.map",
+    "index.html": "/subapp/sub-react/index.html",
+    "precache-manifest.b6bdb7cdd26356d854c0e4e6e5416c04.js": "/subapp/sub-react/precache-manifest.b6bdb7cdd26356d854c0e4e6e5416c04.js",
+    "service-worker.js": "/subapp/sub-react/service-worker.js",
+    "static/css/main.826fdc04.chunk.css.map": "/subapp/sub-react/static/css/main.826fdc04.chunk.css.map",
+    "static/js/2.552a0d8b.chunk.js.LICENSE.txt": "/subapp/sub-react/static/js/2.552a0d8b.chunk.js.LICENSE.txt",
+    "static/media/xindongfang.jpeg": "/subapp/sub-react/static/media/xindongfang.9bf7b1df.jpeg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.09e55165.js",
+    "static/js/2.552a0d8b.chunk.js",
+    "static/css/main.826fdc04.chunk.css",
+    "static/js/main.b4df2967.chunk.js"
+  ]
+}
