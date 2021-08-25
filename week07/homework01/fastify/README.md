@@ -13,3 +13,5 @@ yarn mongo-init
 yarn install
 yarn start
 ```
+
+## 4.访问 [http://localhost:8100](http://localhost:8100)
