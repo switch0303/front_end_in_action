@@ -1,7 +1,7 @@
 const getDateTime = () => {
     const arr = new Date().toISOString().split(/[T|\.]/);
     return `${arr[0]} ${arr[1]}`;
-}
+};
 async function routes(fastify, options) {
     const db = fastify.mongo.db;
 
@@ -36,6 +36,26 @@ async function routes(fastify, options) {
         return { error: "", errorCode: 0, result: {} };
     });
 
+    fastify.get("/api/todo/insert", async (req, reply) => {
+        let value;
+        if (req.query && req.query.value) {
+            value = req.query.value;
+        }
+        if (typeof value !== "string") {
+            return reply
+                .code(400)
+                .header("Content-Type", "application/json; charset=utf-8")
+                .send(new Error("param value must be string"));
+        }
+        const collection = db.collection("todos");
+        await collection.insertOne({
+            subject: value,
+            datetime: Date.now(),
+            state: 0,
+        });
+        return { error: "", errorCode: 0, result: {} };
+    });
+
     fastify.get("/api/todo/query", async (request, reply) => {
         const collection = db.collection("todos");
         const result = await collection.find({}).toArray();
@@ -53,11 +73,17 @@ async function routes(fastify, options) {
         return { error: "", errorCode: 0, result: request.query };
     });
 
-    fastify.get("/redis/get/:key", async (request, reply) => {
+    fastify.get("/api/redis/get/:key", async (request, reply) => {
         if (!request.params.key)
             return { error: "401", errorCode: "param key is required" };
         const { redis } = fastify;
         let val = await redis.get(request.params.key);
+        return { error: "", errorCode: 0, result: val };
+    });
+
+    fastify.get("/api/redis/getAllKeys", async (request, reply) => {
+        const { redis } = fastify;
+        let val = await redis.keys("*");
         return { error: "", errorCode: 0, result: val };
     });
 
@@ -134,12 +160,30 @@ async function routes(fastify, options) {
         return { error: "", errorCode: 0, result: val };
     });
 
-    fastify.get("/api/es/add", async (request, reply) => {
+    fastify.get("/api/es/add", async (req, reply) => {
+        let title, body;
+        if (req.query && req.query.title && req.query.body) {
+            title = req.query.title;
+            body = req.query.body;
+        }
+        if (typeof title !== "string") {
+            return reply
+                .code(400)
+                .header("Content-Type", "application/json; charset=utf-8")
+                .send(new Error("param title must be string"));
+        }
+        if (typeof body !== "string") {
+            return reply
+                .code(400)
+                .header("Content-Type", "application/json; charset=utf-8")
+                .send(new Error("param body must be string"));
+        }
         let result = await fastify.elastic.index({
             index: "todos", //相当于database
             body: {
                 //文档到内容
-                subject: "tiger is a danger animal",
+                title,
+                body,
                 datetime: Date.now(),
                 state: 0,
             },
@@ -147,14 +191,31 @@ async function routes(fastify, options) {
         return result;
     });
 
-    fastify.get("/api/es/get", async (request, reply) => {
+    fastify.get("/api/es/get", async (req, reply) => {
+        let key, text;
+        if (req.query && req.query.key && req.query.text) {
+            key = req.query.key;
+            text = req.query.text;
+        }
+        if (typeof key !== "string") {
+            return reply
+                .code(400)
+                .header("Content-Type", "application/json; charset=utf-8")
+                .send(new Error("param key must be string"));
+        }
+        if (typeof text !== "string") {
+            return reply
+                .code(400)
+                .header("Content-Type", "application/json; charset=utf-8")
+                .send(new Error("param text must be string"));
+        }
         let result = await fastify.elastic.search({
             index: "todos",
-            type: "todos",
+            // type: "todos",
             body: {
                 query: {
                     match: {
-                        state: 0,
+                        [key]: text,
                     },
                 },
             },
