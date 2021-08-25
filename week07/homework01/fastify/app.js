@@ -51,10 +51,11 @@ fastify.addHook("onReady", async function () {
     fastify.mysql.getConnection((err, connection) => {
         connection.execute(
             `CREATE TABLE IF NOT EXISTS todos (
-            id int,
+            sortNo int,
             name varchar(50),
             date datetime,
-            count int
+            count int,
+            id int auto_increment primary key
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8;`,
             (err, result, fields) => {
                 if (err) {

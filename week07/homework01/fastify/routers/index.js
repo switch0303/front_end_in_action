@@ -1,3 +1,7 @@
+const getDateTime = () => {
+    const arr = new Date().toISOString().split(/[T|\.]/);
+    return `${arr[0]} ${arr[1]}`;
+}
 async function routes(fastify, options) {
     const db = fastify.mongo.db;
 
@@ -5,7 +9,7 @@ async function routes(fastify, options) {
         return { hello: "animal" };
     });
 
-    fastify.get("/todo/add", async (request, reply) => {
+    fastify.get("/api/todo/add", async (request, reply) => {
         const collection = db.collection("todos");
         await collection.insertMany([
             {
@@ -32,13 +36,13 @@ async function routes(fastify, options) {
         return { error: "", errorCode: 0, result: {} };
     });
 
-    fastify.get("/todo/query", async (request, reply) => {
+    fastify.get("/api/todo/query", async (request, reply) => {
         const collection = db.collection("todos");
         const result = await collection.find({}).toArray();
         return { error: "", errorCode: 0, result };
     });
 
-    fastify.get("/redis/set", async (request, reply) => {
+    fastify.get("/api/redis/set", async (request, reply) => {
         console.log(request.query);
         if (!request.query)
             return { error: "401", errorCode: "param key is required" };
@@ -57,15 +61,26 @@ async function routes(fastify, options) {
         return { error: "", errorCode: 0, result: val };
     });
 
-    fastify.get("/mysql/insert", async (req, reply) => {
+    fastify.get("/api/mysql/insert", async (req, reply) => {
+        let value;
+        if (req.query && req.query.value) {
+            value = req.query.value;
+        }
+        if (typeof value !== "string") {
+            return reply
+                .code(400)
+                .header("Content-Type", "application/json; charset=utf-8")
+                .send(new Error("param value must be string"));
+        }
         fastify.mysql.getConnection((err, connection) => {
+            console.log(JSON.stringify(req.query));
             if (err)
                 return reply
                     .code(500)
                     .header("Content-Type", "application/json; charset=utf-8")
                     .send(err);
             connection.execute(
-                "INSERT INTO todos VALUES (0, 'mysql', '2021-08-10 20:20:20', 0)",
+                `INSERT INTO todos(sortNo, name, date) VALUES (0, '${value}', '${getDateTime()}')`,
                 (err, result, fields) => {
                     if (err) {
                         console.log("InsertError", err);
@@ -82,7 +97,7 @@ async function routes(fastify, options) {
         });
     });
 
-    fastify.get("/mysql/query", async (req, reply) => {
+    fastify.get("/api/mysql/query", async (req, reply) => {
         fastify.mysql.getConnection((err, connection) => {
             if (err)
                 return reply
@@ -101,7 +116,7 @@ async function routes(fastify, options) {
         });
     });
 
-    fastify.get("/leveldb/set", async (request, reply) => {
+    fastify.get("/api/leveldb/set", async (request, reply) => {
         if (!request.query)
             return { error: "401", errorCode: "param key is required" };
         const level = fastify.level.db;
@@ -111,7 +126,7 @@ async function routes(fastify, options) {
         return { error: "", errorCode: 0, result: request.query };
     });
 
-    fastify.get("/leveldb/get/:key", async (request, reply) => {
+    fastify.get("/api/leveldb/get/:key", async (request, reply) => {
         if (!request.params.key)
             return { error: "401", errorCode: "param key is required" };
         const level = fastify.level.db;
@@ -119,7 +134,7 @@ async function routes(fastify, options) {
         return { error: "", errorCode: 0, result: val };
     });
 
-    fastify.get("/es/add", async (request, reply) => {
+    fastify.get("/api/es/add", async (request, reply) => {
         let result = await fastify.elastic.index({
             index: "todos", //相当于database
             body: {
@@ -132,7 +147,7 @@ async function routes(fastify, options) {
         return result;
     });
 
-    fastify.get("/es/get", async (request, reply) => {
+    fastify.get("/api/es/get", async (request, reply) => {
         let result = await fastify.elastic.search({
             index: "todos",
             type: "todos",

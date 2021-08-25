@@ -2,7 +2,7 @@ const fastifyPlugin = require("fastify-plugin");
 
 async function elasticsearch(fastify, options) {
     fastify.register(require("fastify-elasticsearch"), {
-        node: "http://192.168.0.5:9200",
+        node: "http://0.0.0.0:9200",
     });
 }
 

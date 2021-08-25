@@ -27,3 +27,16 @@ body,
     padding-bottom: 6px;
     border-bottom: 1px solid rgb(180, 240, 17);
 }
+
+.item-main {
+    padding: 10px 0;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 4px;
+}

@@ -15,8 +15,5 @@
     "fastify-static": "^4.2.3",
     "fastify-ws": "^1.0.3",
     "toad-scheduler": "^1.5.0"
-  },
-  "devDependencies": {
-    "mongo-init": "1.0.2"
   }
 }
