@@ -9,7 +9,7 @@ const fastify = require("fastify")({
 
 fastify.register(require("fastify-static"), {
     root: path.join(__dirname, "public"),
-    prefix: "/public/",
+    // prefix: "/public/",
 });
 
 //setup mysql
