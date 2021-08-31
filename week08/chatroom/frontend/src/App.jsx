@@ -2,7 +2,7 @@ import React, { Component, createRef } from "react";
 // import { throttle } from "./util/Util.js";
 
 import ToolBar from "./ToolBar";
-import { Pen } from "./shape";
+import { Pen, Line, Text, Rect, Circle, Ellipse } from "./shape";
 
 import "./App.scss";
 
@@ -28,6 +28,11 @@ const tools = [
 
 const SHAPES = {
     Pen,
+    Line,
+    Text,
+    Rect,
+    Circle,
+    Ellipse,
 };
 let SHAPE_INSTANCES = new Map();
 
@@ -46,6 +51,7 @@ class App extends Component {
     componentDidMount() {
         this.setUpScoket();
         this.setUpCanvas();
+        tools.forEach(tool => this.setShapeInstance(tool.name));
         this.setShapeInstance(this.state.selectedTool);
         this.draw();
     }
@@ -57,6 +63,7 @@ class App extends Component {
                     tools={tools}
                     selectedTool={this.state.selectedTool}
                     onChange={this.changeSelectedTool}
+                    onClearAll={this.onClearAll}
                 />
                 <div className="canvas-container">
                     <canvas ref={this.canvasRef} />
@@ -66,24 +73,25 @@ class App extends Component {
     }
 
     changeSelectedTool = (tool) => {
-        this.setState({ selectedTool: tool });
-        this.setShapeInstance(tool);
+        this.setState({ selectedTool: tool }, () => {
+            this.setShapeInstance(tool);
+        });
     };
 
     setShapeInstance = (tool) => {
-        if (!SHAPE_INSTANCES.has(tool)) {
-            const className = tool.replace(/^(\w)/, (match, p1) =>
-                p1.toUpperCase()
-            );
+        const shape = tool.replace(/^(\w)/, (match, p1) =>
+            p1.toUpperCase()
+        );
+        if (!SHAPE_INSTANCES.has(shape)) {
             const rect = this.canvasRef.current.getBoundingClientRect();
-            this.shapeInstance = new SHAPES[className](
-                this.context,
+            this.shapeInstance = new SHAPES[shape](
+                this.getContext(),
                 rect,
                 this.socket
             );
-            SHAPE_INSTANCES.set(tool, this.shapeInstance);
+            SHAPE_INSTANCES.set(shape, this.shapeInstance);
         } else {
-            this.shapeInstance = SHAPE_INSTANCES.get(tool);
+            this.shapeInstance = SHAPE_INSTANCES.get(shape);
         }
     };
 
@@ -94,6 +102,14 @@ class App extends Component {
         });
         this.socket.on("draw", (data) => {
             console.log("data", data);
+            for (let [shape, instance] of SHAPE_INSTANCES) {
+                if (shape === data.shape) {
+                  instance.syncData(data.data);
+                }
+            }
+        });
+        this.socket.on("clearAll", (data) => {
+            this.clearAll();
         });
     };
 
@@ -121,8 +137,11 @@ class App extends Component {
         // canvas.height = height * ratio;
         // context.scale(ratio, ratio);
 
+        canvas.width = width;
+        canvas.height = height;
+
         context.clearRect(0, 0, width, height);
-        this.context = context;
+        // this.context = context;
 
         canvas.addEventListener(
             "mousedown",
@@ -150,9 +169,13 @@ class App extends Component {
         );
     };
 
+    getContext = () => {
+        return this.canvasRef.current.getContext("2d");
+    }
+
     draw = () => {
         if (Date.now() - this.startTime > 20) {
-            this.context.clearRect(0, 0, this.width, this.height);
+            this.getContext().clearRect(0, 0, this.width, this.height);
             for (let [tool, instance] of SHAPE_INSTANCES) {
                 instance.draw();
             }
@@ -160,6 +183,18 @@ class App extends Component {
         }
         window.requestAnimationFrame(this.draw);
     };
+
+    onClearAll = () => {
+        this.clearAll();
+        this.socket.emit("clearAll");
+    }
+
+    clearAll = () => {
+        this.getContext().clearRect(0, 0, this.width, this.height);
+        for (let [shape, instance] of SHAPE_INSTANCES) {
+            instance.clearAll();
+        }
+    }
 }
 
 export default App;

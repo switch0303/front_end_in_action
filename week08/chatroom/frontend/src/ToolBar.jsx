@@ -7,6 +7,7 @@ export default function ToolBar(props) {
         tools,
         selectedTool,
         onChange,
+        onClearAll,
     } = props;
 
     return (
@@ -28,6 +29,13 @@ export default function ToolBar(props) {
                     )
                 })
             }
+            <span
+                className="tool clear-btn"
+                style={{marginLeft: "auto"}}
+                onClick={onClearAll}
+            >
+                清空
+            </span>
         </div>
     )
 }

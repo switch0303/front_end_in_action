@@ -7,6 +7,7 @@
     display: flex;
     align-items: center;
     padding: 10px 20px;
+    user-select: none;
     .tool {
         width: 60px;
         height: 40px;
@@ -22,5 +23,10 @@
     }
     .active {
         background-color: rgb(124, 118, 248);
+    }
+    .clear-btn {
+        &:active {
+            background-color: #888;
+        }
     }
 }

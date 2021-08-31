@@ -1,6 +1,6 @@
 import Shape from "./Shape.js";
 
-export default class Pen extends Shape {
+export default class Rect extends Shape {
     constructor(context, rect, socket) {
         super(context, rect);
         this.socket = socket;
@@ -10,18 +10,13 @@ export default class Pen extends Shape {
         let { context, style, shapes } = this;
         context.strokeStyle = "#" + style.color;
         context.lineWidth = style.lineWidth;
-        context.lineJoin = "round";
 
         shapes.forEach((shape) => {
             let start = shape[0];
-            context.beginPath();
-            context.moveTo(start.x, start.y);
-            for (let i = 1; i < shape.length; i++) {
-                let point = shape[i];
-                context.lineTo(point.x, point.y);
-            }
-            context.stroke();
-            context.closePath();
+            let end = shape[shape.length - 1];
+            const w = end.x - start.x;
+            const h = end.y - start.y;
+            context.strokeRect(start.x, start.y, w, h);
         });
     }
 
@@ -30,6 +25,6 @@ export default class Pen extends Shape {
     }
 
     sendData(shape) {
-        this.socket.emit("draw", { shape: "Pen", data: shape });
+        this.socket.emit("draw", { shape: "Rect", data: shape });
     }
 }

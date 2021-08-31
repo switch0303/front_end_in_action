@@ -12,6 +12,9 @@ function onConnection(socket) {
         socket.broadcast.emit("draw", data);
         console.log(data);
     });
+    socket.on("clearAll", (data) => {
+        socket.broadcast.emit("clearAll", data);
+    });
 }
 
 io.on("connection", onConnection);

@@ -16,8 +16,8 @@ export default class Shape {
         this.currentShape = [];
 
         this.style = style || {
-            color: "0000F0",
-            lineWidth: 20,
+            color: "01A1D6",
+            lineWidth: 1,
         };
     }
 
@@ -54,5 +54,9 @@ export default class Shape {
             y: this.endY,
         });
         this.sendData(this.currentShape);
+    }
+
+    clearAll() {
+        this.shapes = [];
     }
 }
