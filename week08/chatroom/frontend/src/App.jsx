@@ -1,21 +1,10 @@
 import React, { Component, createRef } from "react";
-// import { throttle } from "./util/Util.js";
+ import Util from "./util/Util.js";
 
 import ToolBar from "./ToolBar";
 import { Pen, Line, Text, Rect, Circle, Ellipse } from "./shape";
 
 import "./App.scss";
-
-function throttle(callback, delay) {
-    var previousCall = new Date().getTime();
-    return function () {
-        var time = new Date().getTime();
-        if (time - previousCall >= delay) {
-            previousCall = time;
-            callback.apply(null, arguments);
-        }
-    };
-}
 
 const tools = [
     { name: "pen", text: "钢笔" },
@@ -153,7 +142,7 @@ class App extends Component {
         );
         canvas.addEventListener(
             "mousemove",
-            throttle((evt) => {
+            Util.throttle((evt) => {
                 if (!this.shapeInstance) return;
                 this.shapeInstance.mousemove.apply(this.shapeInstance, [evt]);
             }, 30),
