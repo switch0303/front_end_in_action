@@ -10,10 +10,14 @@ function onConnection(socket) {
     console.log("connection.")
     socket.on("draw", (data) => {
         socket.broadcast.emit("draw", data);
-        console.log(data);
+        // console.log(data);
     });
     socket.on("clearAll", (data) => {
         socket.broadcast.emit("clearAll", data);
+    });
+
+    socket.on("screenSharing", (data) => {
+        socket.broadcast.emit("screenSharing", data);
     });
 }
 

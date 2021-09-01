@@ -2,6 +2,8 @@ import React, { Component, createRef } from "react";
  import Util from "./util/Util.js";
 
 import ToolBar from "./ToolBar";
+import ScreenShare from "./ScreenShare";
+import ScreenView from "./ScreenView";
 import { Pen, Line, Text, Rect, Circle, Ellipse } from "./shape";
 
 import "./App.scss";
@@ -30,6 +32,9 @@ class App extends Component {
         super(...arg);
         this.state = {
             selectedTool: "pen",
+
+            shouldShowScreenShare: false,
+            shouldShowScreenView: false,
         };
         this.canvasRef = createRef();
         this.width = 0;
@@ -53,10 +58,37 @@ class App extends Component {
                     selectedTool={this.state.selectedTool}
                     onChange={this.changeSelectedTool}
                     onClearAll={this.onClearAll}
+                    onScreenShare={this.onScreenShare}
                 />
                 <div className="canvas-container">
                     <canvas ref={this.canvasRef} />
                 </div>
+
+                {
+                    this.state.shouldShowScreenShare
+                        ? (
+                            <ScreenShare
+                                onBack={() => {
+                                    this.setState({shouldShowScreenShare: false});
+                                }}
+                                socket={this.socket}
+                            />
+                        )
+                        : null
+                }
+
+                {
+                    this.state.shouldShowScreenView
+                        ? (
+                            <ScreenView
+                                onBack={() => {
+                                    this.setState({shouldShowScreenView: false});
+                                }}
+                                socket={this.socket}
+                            />
+                        )
+                        : null
+                }
             </div>
         );
     }
@@ -99,6 +131,10 @@ class App extends Component {
         });
         this.socket.on("clearAll", (data) => {
             this.clearAll();
+        });
+
+        this.socket.on("screenSharing", data => {
+            this.confirmReceiveShare();
         });
     };
 
@@ -182,6 +218,27 @@ class App extends Component {
         this.getContext().clearRect(0, 0, this.width, this.height);
         for (let [shape, instance] of SHAPE_INSTANCES) {
             instance.clearAll();
+        }
+    }
+
+    onScreenShare = () => {
+        this.setState({
+            shouldShowScreenShare: true,
+        });
+    }
+
+    confirmReceiveShare = () => {
+        if (!this.asking && !this.ignoreScreenSharing && !this.state.shouldShowScreenView) {
+            this.asking = true;
+            const res = window.confirm("有人正在分享屏幕，是否查看？");
+            if (res) {
+                this.setState({
+                    shouldShowScreenView: true,
+                }, () => this.asking = false);
+            } else {
+                this.ignoreScreenSharing = true;
+                this.asking = false;
+            }
         }
     }
 }

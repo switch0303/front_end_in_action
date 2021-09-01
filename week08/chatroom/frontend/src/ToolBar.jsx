@@ -8,6 +8,7 @@ export default function ToolBar(props) {
         selectedTool,
         onChange,
         onClearAll,
+        onScreenShare,
     } = props;
 
     return (
@@ -30,11 +31,17 @@ export default function ToolBar(props) {
                 })
             }
             <span
-                className="tool clear-btn"
+                className="tool normal-btn"
                 style={{marginLeft: "auto"}}
                 onClick={onClearAll}
             >
                 清空
+            </span>
+            <span
+                className="tool normal-btn"
+                onClick={onScreenShare}
+            >
+                共享屏幕
             </span>
         </div>
     )
