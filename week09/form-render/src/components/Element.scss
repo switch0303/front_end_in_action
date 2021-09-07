@@ -1,0 +1,16 @@
+.ele-item {
+    width: 7.2rem;
+    height: 2.2rem;
+    margin: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    background-color: #f5f7fa;
+}
+
+.ele-item:hover {
+    color: #409eff;
+    border: 1px dashed #409eff;
+}
