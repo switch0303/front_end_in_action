@@ -8,12 +8,9 @@ export default function Element({ text, name, schema, actions }) {
     const [{ isDragging }, dragRef] = useDrag({
         type: "box",
         item: {
-            dragItem: {
-                parent: "#",
-                schema,
-                children: [],
-            },
-            $id: `#/${name}_${nanoid(6)}`,
+            $id: `${name}_${nanoid(6)}`,
+            schemaItem: schema,
+            operateType: "add",
         },
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
@@ -24,10 +21,17 @@ export default function Element({ text, name, schema, actions }) {
         <div ref={dragRef}>
             <div
                 className="ele-item"
+                style={{ opacity: isDragging ? 0.5 : 1 }}
                 onClick={() => {
+                    const $id = `${name}_${nanoid(6)}`;
                     actions.addSchema({
-                        [`${name}_${nanoid(6)}`]: schema
-                    })
+                        position: "inside",
+                        targetId: "#",
+                        item: {
+                            $id,
+                            schemaItem: schema,
+                        },
+                    });
                 }}
             >
                 {text}

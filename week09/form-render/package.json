@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "antd": "^4.16.13",
+    "copy-text-to-clipboard": "^3.0.1",
     "nanoid": "^3.1.25",
     "react": "^17.0.0",
     "react-dnd": "^14.0.3",

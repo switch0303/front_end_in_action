@@ -12,10 +12,10 @@ const renderControler = (item) => {
 };
 
 export default function Editor(props) {
-    const { transformedSchema } = props;
+    const { transformedSchema, globalState, actions } = props;
 
     return (
-        <Wrapper>
+        <Wrapper id="#" isRoot globalState={globalState} actions={actions}>
             {Array.isArray(transformedSchema) && transformedSchema.length ? (
                 <Form
                     labelCol={{
@@ -26,8 +26,12 @@ export default function Editor(props) {
                     }}
                 >
                     {transformedSchema.map((item) => {
+                        const {
+                            id,
+                            ...schema
+                        } = item;
                         return (
-                            <Wrapper key={item.id}>
+                            <Wrapper key={id} id={id} schema={schema} globalState={globalState} actions={actions}>
                                 <Form.Item label={item.title} name={item.id}>
                                     {renderControler(item)}
                                 </Form.Item>
@@ -36,7 +40,7 @@ export default function Editor(props) {
                     })}
                 </Form>
             ) : (
-                <div>点击/拖拽左侧栏的组件进行添加</div>
+                <div className="h-100 flex justify-center items-center f4">点击/拖拽左侧栏的组件进行添加</div>
             )}
         </Wrapper>
     );
