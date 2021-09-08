@@ -121,9 +121,7 @@ export default function Wrapper(props) {
 
     const handleClick = (e) => {
         e.stopPropagation();
-        actions.setGlobalState({
-            selectedId: id,
-        });
+        actions.setSelectedId(id);
     };
 
     const handleCopySchema = () => {

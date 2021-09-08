@@ -28,7 +28,7 @@ class Content extends Component {
                     <Button
                         className="mr2"
                         onClick={() => {
-                            actions.setGlobalState({ isEditMode: !isEditMode });
+                            actions.setGlobalState({ isEditMode: !isEditMode, selectedId: "#" });
                         }}
                     >
                         {isEditMode ? "预览" : "编辑"}

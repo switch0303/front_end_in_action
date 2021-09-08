@@ -3,8 +3,11 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "./App.css";
 
+import { defaultCommonSettings } from "./settings";
+
 import Side from "./components/Side";
 import Content from "./components/Content";
+import Setting from "./components/Setting";
 
 class App extends Component {
     constructor(...arg) {
@@ -16,10 +19,13 @@ class App extends Component {
                     inputA: {
                         title: "输入框1",
                         type: "string",
+                        required: true,
+                        initialValue: "default text"
                     },
-                    inputB: {
-                        title: "输入框2",
+                    name: {
+                        title: "姓名",
                         type: "string",
+                        placeholder: "请输入姓名"
                     },
                 },
             },
@@ -38,6 +44,10 @@ class App extends Component {
             clearAll: this.clearAll,
             getTransformedSchema: this.getTransformedSchema,
             getDisplaySchemaString: this.getDisplaySchemaString,
+            getSelectedSetting: this.getSelectedSetting,
+            getSelectedSchemaItem: this.getSelectedSchemaItem,
+            setSelectedId: this.setSelectedId,
+            updateSchema: this.updateSchema,
         };
 
         return (
@@ -49,7 +59,9 @@ class App extends Component {
                     <div className="content-wrapper">
                         <Content globalState={globalState} actions={actions} />
                     </div>
-                    <div className="setting-wrapper">setting</div>
+                    <div className="setting-wrapper">
+                        <Setting globalState={globalState} actions={actions} />
+                    </div>
                 </div>
             </DndProvider>
         );
@@ -104,8 +116,8 @@ class App extends Component {
                         [$id]: schemaItem,
                     },
                 },
-                selectedId: $id,
             });
+            this.setSelectedId($id);
         } else {
             const transformedSchema = this.getTransformedSchema(schema);
             const findIndex = transformedSchema.findIndex(
@@ -127,10 +139,21 @@ class App extends Component {
                 const { id, ...schemaItem } = it;
                 newSchema.properties[id] = schemaItem;
             });
-            this.setState({
-                schema: newSchema,
-                selectedId: $id,
-            });
+            this.setState(
+                {
+                    schema: {
+                        type: "object",
+                        properties: {},
+                    },
+                    selectedId: "#",
+                },
+                () => {
+                    this.setState({
+                        schema: newSchema,
+                        selectedId: $id,
+                    });
+                }
+            );
         }
     };
 
@@ -187,22 +210,59 @@ class App extends Component {
             const { id, ...schemaItem } = it;
             newSchema.properties[id] = schemaItem;
         });
+
+        const newSelectedId = transformedSchema[selectedIndex]
+            ? transformedSchema[selectedIndex].id
+            : "#";
+        console.log(selectedIndex, newSelectedId)
         this.setState(
             {
                 schema: {
                     type: "object",
                     properties: {},
                 },
+                selectedId: "#",
             },
             () => {
                 this.setState({
                     schema: newSchema,
-                    selectedId: transformedSchema[selectedIndex]
-                        ? transformedSchema[selectedIndex].id
-                        : "#",
+                    selectedId: newSelectedId,
                 });
             }
         );
+    };
+
+    updateSchema = ({$id, obj}) => {
+        const { schema } = this.state;
+        const transformedSchema = this.getTransformedSchema(schema);
+        const updateIndex = transformedSchema.findIndex((it) => it.id === $id);
+        if (updateIndex !== -1) {
+            transformedSchema[updateIndex] = {...transformedSchema[updateIndex], ...obj};
+            const newSchema = {
+                ...schema,
+                properties: {},
+            };
+            transformedSchema.forEach((it) => {
+                const { id, ...schemaItem } = it;
+                newSchema.properties[id] = schemaItem;
+            });
+            this.setState(
+                {
+                    schema: {
+                        type: "object",
+                        properties: {},
+                    },
+                },
+                () => {
+                    this.setState({
+                        schema: newSchema,
+                    });
+                }
+            );
+            if ("id" in obj) {
+                this.setSelectedId(obj.id);
+            }
+        }
     };
 
     clearAll = () => {
@@ -211,6 +271,61 @@ class App extends Component {
                 type: "object",
                 properties: {},
             },
+        });
+    };
+
+    getSelectedSetting = () => {
+        const {schema, selectedId} = this.state;
+        if (
+            !schema ||
+            !schema.type ||
+            schema.type !== "object" ||
+            !schema.properties ||
+            !schema.properties[selectedId]
+        ) {
+            return null;
+        } else {
+            const schemaItem = schema.properties[selectedId];
+            if (schemaItem.type === "boolean") {
+                const {
+                    placeholder,
+                    initialValue,
+                    ...rest
+                } = defaultCommonSettings;
+                return {
+                    type: "object",
+                    properties: {
+                        ...rest,
+                        initialValue: {
+                            title: "是否默认勾选",
+                            type: "boolean",
+                        },
+                    },
+                };
+            }
+            return {
+                type: "object",
+                properties: defaultCommonSettings,
+            };
+        }
+    };
+
+    getSelectedSchemaItem = () => {
+        const { schema, selectedId } = this.state;
+        const transformedSchema = this.getTransformedSchema(schema);
+        const findItem = transformedSchema.find(
+            (it) => it.id === selectedId
+        );
+        return findItem;
+    };
+
+    setSelectedId = (selectedId) => {
+        this.setState({
+            selectedId: "#",
+        }, () => {
+            this.setState({
+                selectedId,
+            });
         });
     };
 }

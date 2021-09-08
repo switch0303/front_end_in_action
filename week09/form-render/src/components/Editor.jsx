@@ -1,15 +1,7 @@
 import React from "react";
-import { Form, Input, InputNumber } from "antd";
+import { Form } from "antd";
 import Wrapper from "./Wrapper";
-
-const renderControler = (item) => {
-    const { type } = item;
-    if (type === "string") {
-        return <Input />;
-    } else if (type === "number") {
-        return <InputNumber style={{ width: "100%" }} />;
-    }
-};
+import { renderControler } from "./Previewer";
 
 export default function Editor(props) {
     const { transformedSchema, globalState, actions } = props;
@@ -30,9 +22,22 @@ export default function Editor(props) {
                             id,
                             ...schema
                         } = item;
+
+                        const {
+                            id: _id,
+                            title,
+                            type,
+                            ...restProps
+                        } = item;
+
                         return (
                             <Wrapper key={id} id={id} schema={schema} globalState={globalState} actions={actions}>
-                                <Form.Item label={item.title} name={item.id}>
+                                <Form.Item 
+                                    label={item.title}
+                                    name={item.id}
+                                    valuePropName={item.type === "boolean" ? "checked" : "value"}
+                                    {...restProps}
+                                >
                                     {renderControler(item)}
                                 </Form.Item>
                             </Wrapper>
