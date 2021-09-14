@@ -476,6 +476,11 @@
   resolved "https://registry.npmjs.org/@vue/shared/-/shared-3.2.11.tgz#01899f54949caf1ac241de397bd17069632574de"
   integrity sha512-ovfXAsSsCvV9JVceWjkqC/7OF5HbgLOtCWjCIosmPGG8lxbPuavhIxRH1dTx4Dg9xLgRTNLvI3pVxG4ItQZekg==
 
+"@vue/shared@^3.2.11":
+  version "3.2.11"
+  resolved "https://registry.nlark.com/@vue/shared/download/@vue/shared-3.2.11.tgz#01899f54949caf1ac241de397bd17069632574de"
+  integrity sha1-AYmfVJScrxrCQd45e9FwaWMldN4=
+
 "@vueuse/core@^6.3.2":
   version "6.3.2"
   resolved "https://registry.npmjs.org/@vueuse/core/-/core-6.3.2.tgz#3365b21a2d094d5afc42b607e84792fed6a4c463"

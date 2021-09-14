@@ -1,6 +1,6 @@
 import { defineComponent, computed, inject, h } from "vue";
 import type { PropType } from "vue";
-import "@/theme/chalk/col.scss";
+import "../theme/chalk/col.scss";
 
 type SizeObject = {
   span: number;

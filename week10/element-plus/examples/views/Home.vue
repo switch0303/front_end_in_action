@@ -23,7 +23,7 @@ import {
   getCurrentInstance,
 } from "vue";
 import { eleComponents } from "../constants";
-import { Row, Col } from "@/ele";
+import { Row, Col } from "../../packages/ele";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -60,7 +60,7 @@ export default defineComponent({
 
     return {
       space,
-      eleComponents,
+      eleComponents: eleComponents.filter(item => item[2]),
       gotoComponnet,
     };
   },

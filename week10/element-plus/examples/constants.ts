@@ -39,7 +39,7 @@ export const eleComponents = [
   ["Notification", "Notification 通知"],
   ["Affix", "Affix 固钉"],
   ["NavMenu", "NavMenu 导航菜单"],
-  ["Tabs", "Tabs 标签页"],
+  ["Tabs", "Tabs 标签页", true],
   ["Breadcrumb", "Breadcrumb 面包屑"],
   ["PageHeader", "PageHeader 页头"],
   ["Dropdown", "Dropdown 下拉菜单"],

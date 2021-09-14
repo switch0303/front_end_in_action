@@ -1,5 +1,5 @@
 import { defineComponent, computed, h, provide } from "vue";
-import "@/theme/chalk/row.scss";
+import "../theme/chalk/row.scss";
 
 export default defineComponent({
   name: "ElRow",

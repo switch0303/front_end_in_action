@@ -7,11 +7,11 @@ import WindiCSS from "vite-plugin-windicss";
 export default defineConfig({
   base: "", // 设置打包路径
   plugins: [vue(), vueJsx(), WindiCSS()],
-  resolve: {
-    alias: {
-      "@": resolve(__dirname, "../packages"), // 设置 `@` 指向 `src` 目录
-    },
-  },
+  // resolve: {
+  //   alias: {
+  //     "@": resolve(__dirname, "../packages"), // 设置 `@` 指向 `src` 目录
+  //   },
+  // },
   publicDir: "public",
   build: {
     rollupOptions: {

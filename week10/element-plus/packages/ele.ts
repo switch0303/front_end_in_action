@@ -38,7 +38,7 @@ export { default as MessageBox } from "./MessageBox/MessageBox.vue";
 export { default as Notification } from "./Notification/Notification.vue";
 export { default as Affix } from "./Affix/Affix.vue";
 export { default as NavMenu } from "./NavMenu/NavMenu.vue";
-export { default as Tabs } from "./Tabs/Tabs.vue";
+export { default as Tabs } from "./Tabs";
 export { default as Breadcrumb } from "./Breadcrumb/Breadcrumb.vue";
 export { default as PageHeader } from "./PageHeader/PageHeader.vue";
 export { default as Dropdown } from "./Dropdown/Dropdown.vue";
