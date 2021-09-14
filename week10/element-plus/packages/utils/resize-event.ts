@@ -1,4 +1,4 @@
-import ResizeObserver from 'resize-observer-polyfill'
+import ResizeObserver from '../../examples/node_modules/resize-observer-polyfill'
 import isServer from './isServer'
 
 import type { CustomizedHTMLElement } from './types'

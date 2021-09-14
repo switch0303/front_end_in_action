@@ -9,7 +9,7 @@ import {
   onMounted,
   onBeforeUnmount,
 } from 'vue'
-import { NOOP, capitalize } from '@vue/shared'
+import { NOOP, capitalize } from '../../../examples/node_modules/@vue/shared'
 import { EVENT_CODE } from '@/utils/aria'
 import {
   addResizeListener,

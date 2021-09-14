@@ -2,6 +2,7 @@ import Tabs from './src/tabs'
 import TabPane from './src/tab-pane.vue'
 
 import type { App } from 'vue'
+import "../theme/chalk/index.scss";
 
 Tabs.install = (app: App): void => {
   app.component(Tabs.name, Tabs)

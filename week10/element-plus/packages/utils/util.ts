@@ -11,8 +11,8 @@ import {
   isFunction,
   looseEqual,
   toRawType,
-} from '@vue/shared'
-import isEqualWith from 'lodash/isEqualWith'
+} from '../../examples/node_modules/@vue/shared'
+import {isEqualWith} from '../../examples/node_modules/lodash-es'
 import isServer from './isServer'
 import { debugWarn } from './error'
 

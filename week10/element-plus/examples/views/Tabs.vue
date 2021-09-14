@@ -2,23 +2,25 @@
 <template>
     <div class="page-tabs">
         <h2>Tabs 标签页</h2>
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
-            <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
-            <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-            <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
-        </el-tabs>
+          <Tabs v-model="activeName" @tab-click="handleClick">
+            <TabPane label="用户管理" name="first">用户管理</TabPane>
+            <TabPane label="配置管理" name="second">配置管理</TabPane>
+            <TabPane label="角色管理" name="third">角色管理</TabPane>
+            <TabPane label="定时任务补偿" name="fourth">定时任务补偿</TabPane>
+        </Tabs>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, computed, h } from "vue";
 import type { PropType } from 'vue';
-import { ElTabs, ElTabPane } from "@/ele";
+import { Tabs } from "@/ele";
+
+const TabPane = Tabs.TabPane;
 
 export default defineComponent({
     name: 'PageTabs',
-    components: { ElTabs, ElTabPane },
+    components: { Tabs, TabPane },
     setup(props, { emit, slots }) {
         const activeName = ref("second")
 

@@ -10,7 +10,7 @@ import {
   ref,
   watch,
 } from 'vue'
-import { isPromise } from '@vue/shared'
+import { isPromise } from '../../../examples/node_modules/@vue/shared'
 import { EVENT_CODE } from '@/utils/aria'
 import TabNav from './tab-nav.vue'
 
@@ -24,7 +24,7 @@ import type {
   RootTabs,
   UpdatePaneStateCallback,
 } from './token'
-import "@/theme/chalk/tabs.scss";
+// import "../../theme/chalk/tabs.scss";
 
 export default defineComponent({
   name: 'ElTabs',

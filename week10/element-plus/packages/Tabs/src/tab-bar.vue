@@ -14,8 +14,8 @@ import {
   nextTick,
   ref,
 } from 'vue'
-import { capitalize } from '@vue/shared'
-import { Resize } from '@/directives'
+import { capitalize } from '../../../examples/node_modules/@vue/shared'
+import { Resize } from '@/directives/index'
 import { Pane, RootTabs } from './token'
 
 import type { CSSProperties, PropType } from 'vue'
